@@ -1,4 +1,4 @@
-/// Display topology
+/// display topology
 (function(Topology){
     
     var current_visits = [];

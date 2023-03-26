@@ -247,7 +247,7 @@ RegExp.escape = function (s) {
                 throw new Error('CSVDataError: Illegal Quote [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
               }
               // broken parser?
-              throw new Error('CSVDataError: Illegal Data [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
+              throw new Error('CSVDataError: Illegal data [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
             default:
               // shenanigans
               throw new Error('CSVDataError: Unknown State [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
@@ -574,7 +574,7 @@ RegExp.escape = function (s) {
                 throw new Error('CSVDataError: Illegal Quote [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
               }
               // broken parser?
-              throw new Error('CSVDataError: Illegal Data [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
+              throw new Error('CSVDataError: Illegal data [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
             default:
               // shenanigans
               throw new Error('CSVDataError: Unknown State [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');

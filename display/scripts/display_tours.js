@@ -263,7 +263,7 @@
 		displayVisits(visits);
 	}
 
-	// Display visits on map
+	// display visits on map
 	// visits: array of {id, name, lat, lon}
 	function displayVisits(visits){
         var is_depot = true;
@@ -330,7 +330,7 @@
 		displayTours(tours);
 	}
 
-	// Display tours on map as polyligns
+	// display tours on map as polyligns
 	// tours are arrays of visits (array of {id, name, lat, lon})
 	function displayTours(tours){
 
