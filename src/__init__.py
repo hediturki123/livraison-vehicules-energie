@@ -1,9 +1,8 @@
-import numpy as np
+from src.models.instance import Instance
 
 
 def main():
-    # This should print 3.141592653589793
-    print(np.pi)
+    Instance('lyon_40_1_1')
 
 
 if __name__ == '__main__':
