@@ -42,8 +42,18 @@ class Instance:
             self.times: list[list[int]] = []
             self.__initialize_times()
 
+            # Préparation des véhicules
+            self.current_vehicle: Vehicle | None = None
+            self.used_vehicles: list[Vehicle] = []
+
         else:
             raise Exception('instance "' + instance_name + '" does not exist')
+
+    def execute(self) -> None:
+        first_vehicle: Vehicle = Vehicle()
+        self.current_vehicle = first_vehicle
+        self.used_vehicles.append(first_vehicle)
+        # TODO: algorithme principal
 
     def __initialize_visits(self) -> None:
         # Chargement des visites depuis le fichier CSV correspondant
