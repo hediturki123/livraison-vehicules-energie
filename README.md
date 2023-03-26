@@ -14,5 +14,9 @@ poetry install
 ```
 2. Lancer le projet :
 ```sh
-poetry run python src/__init__.py
+poetry run python src/__init__.py <nom_instance>
+```
+  Par exemple :
+```sh
+poetry run python src/__init__.py lyon_40_1_1
 ```
