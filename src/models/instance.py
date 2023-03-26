@@ -3,9 +3,9 @@ import os.path
 import numpy as np
 import src.environment as env
 
-from src.models.instance_file import InstanceFile
-from src.models.vehicle import Vehicle
 from src.models.visit import Visit
+from src.models.vehicle import Vehicle
+from src.models.instance_file import InstanceFile
 
 
 class Instance:
@@ -50,9 +50,19 @@ class Instance:
             raise Exception('instance "' + instance_name + '" does not exist')
 
     def execute(self) -> None:
+        # Mise en place du premier véhicule
         first_vehicle: Vehicle = Vehicle()
         self.current_vehicle = first_vehicle
         self.used_vehicles.append(first_vehicle)
+
+        # Exemple d'utilisation des actions
+        # (On fait un import local pour éviter les dépendances circulaires)
+        from src.models.actions import ActionQueue, Move, Deliver
+        aq: ActionQueue = ActionQueue(self, [
+            Move(self, 1.0, 120),
+            Deliver(self, 30)
+        ])
+        aq.execute()
         # TODO: algorithme principal
 
     def __initialize_visits(self) -> None:
