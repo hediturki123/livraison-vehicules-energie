@@ -1,3 +1,4 @@
+import copy
 import csv
 import os.path
 import numpy as np
@@ -25,20 +26,21 @@ class Instance:
                     raise Exception('instance "' + instance_name + '" is missing file "' + filename + '"')
 
             # Initialisation des visites
-            self.visits_to_do: list[Visit] = []
+            self.visits_to_do: dict[int, Visit] = {}
             self.__initialize_visits()
 
-            # Initialisation de la position du dépôt
-            self.warehouse_position: (float, float) = self.visits_to_do[0].position
+            # Initialisation du dépôt
+            self.warehouse: Visit = self.visits_to_do[0]
+            self.visits_to_do.pop(0)
 
             # Initialisation des données de véhicule
-            Vehicle.initialize(self.files_paths[InstanceFile.VEHICLE], self.warehouse_position)
+            Vehicle.initialize(self.files_paths[InstanceFile.VEHICLE])
 
             # Initialisation de la matrice des distances (en kilomètres)
             self.distances: list[list[float]] = []
             self.__initialize_distances()
 
-            # Intialisation de la matrice des temps de trajet (en secondes)
+            # Initialisation de la matrice des temps de trajet (en secondes)
             self.times: list[list[int]] = []
             self.__initialize_times()
 
@@ -72,7 +74,7 @@ class Instance:
             # Pour chaque ligne du CSV, on crée une visite et on la met dans la liste des visites à effectuer
             for row in visits_csv_content:
                 new_visit: Visit = Visit.from_csv_row(row)
-                self.visits_to_do.append(new_visit)
+                self.visits_to_do[new_visit.vi_id] = new_visit
 
     def __initialize_distances(self) -> None:
         with open(self.files_paths[InstanceFile.DISTANCES], "r") as distances_txt_file:

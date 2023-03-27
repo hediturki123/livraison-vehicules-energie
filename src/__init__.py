@@ -13,5 +13,6 @@ def main():
     else:
         print("Veuillez renseigner un nom d'instance en argument.")
 
+
 if __name__ == '__main__':
     main()
