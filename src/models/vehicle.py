@@ -13,13 +13,15 @@ class Vehicle:
     end_time: int
     charge_duration: int = 10800  # TODO: Prendre en compte la vitesse de charge.
 
-    def __init__(self):
+    def __init__(self, distances: list[list[float]], times: list[list[int]]):
         Vehicle.__id += 1
         self.ve_id: int = Vehicle.__id
         self.dist: float = Vehicle.max_dist
         self.used_capacity: int = 0
         self.remaining_time: int = Vehicle.end_time - Vehicle.start_time
         self.position: int = 0
+        self.distances = distances
+        self.times = times
 
     @staticmethod
     def initialize(ini_path: str):
@@ -65,15 +67,15 @@ class Vehicle:
             raise Exception('invalid ini file for vehicle (missing "end_time" key)')
 
     # Méthode pour vérifier que le véhicule peut se déplacer de <distance> km pendant <duration> secondes.
-    def can_move(self, distance: float, duration: float) -> bool:
-        return self.dist >= distance and self.remaining_time >= duration
+    def can_move_to(self, position: int) -> bool:
+        return self.dist >= self.distances[self.position][position] and self.remaining_time >= self.times[self.position][position]
 
     # Méthode pour déplacer le véhicule à la position <position> sur <distance> km pendant <duration> secondes.
-    def move_to(self, new_position: int, distance: float, duration: int):
-        if self.can_move(distance, duration):
+    def move_to(self, new_position: int):
+        if self.can_move_to(new_position):
             self.position = new_position
-            self.dist -= distance
-            self.remaining_time -= duration
+            self.dist -= self.distances[self.position][new_position]
+            self.remaining_time -= self.times[self.position][new_position]
         else:
             raise Exception("vehicle %d can't move to position %d (too far or too long)" % (self.ve_id, new_position))
 

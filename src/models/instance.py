@@ -1,4 +1,3 @@
-import copy
 import csv
 import os.path
 import numpy as np
@@ -26,12 +25,13 @@ class Instance:
                     raise Exception('instance "' + instance_name + '" is missing file "' + filename + '"')
 
             # Initialisation des visites
-            self.visits_to_do: dict[int, Visit] = {}
+            self.visits: dict[int, Visit] = {}
             self.__initialize_visits()
+            self.visits_to_do: list[int] = [visit_id for visit_id in self.visits]
+            self.visits_to_do.remove(0)
 
             # Initialisation du dépôt
-            self.warehouse: Visit = self.visits_to_do[0]
-            self.visits_to_do.pop(0)
+            self.warehouse: Visit = self.visits[0]
 
             # Initialisation des données de véhicule
             Vehicle.initialize(self.files_paths[InstanceFile.VEHICLE])
@@ -51,21 +51,35 @@ class Instance:
         else:
             raise Exception('instance "' + instance_name + '" does not exist')
 
+    # Exécution de l'algorithme principal
     def execute(self) -> None:
-        # Mise en place du premier véhicule
-        first_vehicle: Vehicle = Vehicle()
-        self.current_vehicle = first_vehicle
-        self.used_vehicles.append(first_vehicle)
-
-        # Exemple d'utilisation des actions
-        # (On fait un import local pour éviter les dépendances circulaires)
-        from src.models.actions import ActionQueue, Move, Deliver
-        aq: ActionQueue = ActionQueue(self, [
-            Move(self, 1.0, 120),
-            Deliver(self, 30)
-        ])
-        aq.execute()
-        # TODO: algorithme principal
+        # Tant qu'il y a des visites à effectuer...
+        while len(self.visits_to_do) > 0:
+            # On crée un nouveau véhicule
+            self.current_vehicle = Vehicle(self.distances, self.times)
+            self.used_vehicles.append(self.current_vehicle)
+            # On charge le véhicule
+            self.current_vehicle.fill()
+            # Tant que la journée n'est pas finie (moins le temps pour rentrer)...
+            while self.current_vehicle.remaining_time - self.times[self.current_vehicle.position][0] > 0:
+                # On s'arrête si le véhicule ne peut plus faire de visite
+                if len(self.visits_to_do) <= 0:
+                    break
+                # La prochaine visite à effectuer est la première de la liste
+                next_visit: int = self.visits_to_do[0]
+                # Si le véhicule peut se déplacer, livrer puis rentrer
+                if self.current_vehicle.can_move_to(next_visit):  # FIXME: manque conditions "livrer" et "rentrer"
+                    # Se déplacer puis livrer
+                    self.current_vehicle.move_to(next_visit)
+                    self.current_vehicle.deliver(self.visits[next_visit].demand)
+                    # On enlève la visite de la liste des visites à effectuer
+                    self.visits_to_do.remove(next_visit)
+                else:
+                    # Rentrer puis recharger
+                    self.current_vehicle.move_to(0)
+                    self.current_vehicle.recharge()
+            # Rentrer pour terminer la journée
+            self.current_vehicle.move_to(0)
 
     def __initialize_visits(self) -> None:
         # Chargement des visites depuis le fichier CSV correspondant
@@ -74,7 +88,7 @@ class Instance:
             # Pour chaque ligne du CSV, on crée une visite et on la met dans la liste des visites à effectuer
             for row in visits_csv_content:
                 new_visit: Visit = Visit.from_csv_row(row)
-                self.visits_to_do[new_visit.vi_id] = new_visit
+                self.visits[new_visit.vi_id] = new_visit
 
     def __initialize_distances(self) -> None:
         with open(self.files_paths[InstanceFile.DISTANCES], "r") as distances_txt_file:
