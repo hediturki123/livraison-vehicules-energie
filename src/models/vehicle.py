@@ -17,9 +17,10 @@ class Vehicle:
         Vehicle.__id += 1
         self.ve_id: int = Vehicle.__id
         self.dist: float = Vehicle.max_dist
-        self.used_capacity: int = 0
+        self.used_capacity: int = Vehicle.total_capacity
         self.remaining_time: int = Vehicle.end_time - Vehicle.start_time
         self.position: int = 0
+        self.history: list[str] = []
         self.distances = distances
         self.times = times
 
@@ -44,7 +45,7 @@ class Vehicle:
         # Chargement de la capacité (sans unité)
         capacity_key: str = 'capacity'
         if capacity_key in vehicle_ini:
-            Vehicle.total_capacity = vehicle_ini.get(capacity_key)
+            Vehicle.total_capacity = int(vehicle_ini.get(capacity_key))
         else:
             raise Exception('invalid ini file for vehicle (missing "capacity" key)')
 
@@ -66,18 +67,24 @@ class Vehicle:
         else:
             raise Exception('invalid ini file for vehicle (missing "end_time" key)')
 
-    # Méthode pour vérifier que le véhicule peut se déplacer de <distance> km pendant <duration> secondes.
-    def can_move_to(self, position: int) -> bool:
-        return self.dist >= self.distances[self.position][position] and self.remaining_time >= self.times[self.position][position]
+    def can_move_and_deliver(self, position: int, demand: int) -> bool:
+        if position == 0:
+            return True
+        return all([
+            self.dist >= self.distances[self.position][position] + self.distances[position][0],
+            self.remaining_time >= self.times[self.position][position]
+            + self.times[position][0] + self.__get_delivery_duration(demand),
+            self.used_capacity >= demand
+        ])
 
     # Méthode pour déplacer le véhicule à la position <position> sur <distance> km pendant <duration> secondes.
     def move_to(self, new_position: int):
-        if self.can_move_to(new_position):
-            self.position = new_position
+        if new_position != self.position:
             self.dist -= self.distances[self.position][new_position]
             self.remaining_time -= self.times[self.position][new_position]
-        else:
-            raise Exception("vehicle %d can't move to position %d (too far or too long)" % (self.ve_id, new_position))
+            self.position = new_position
+            if new_position != 0:
+                self.history.append("%d" % new_position)
 
     # Méthode pour vérifier si le véhicule peut effectuer une livraison (i.e. s'il a assez de chargement).
     def can_deliver(self, demand: int) -> bool:
@@ -98,35 +105,21 @@ class Vehicle:
                 (self.ve_id, amount, self.used_capacity)
             )
 
-    # Méthode pour vérifier que le véhicule peut charger <freight> sacs à son bord.
-    def can_load(self, freight: int) -> bool:
-        return all([
-            self.position == 0,
-            self.total_capacity - self.used_capacity >= freight,
-            self.remaining_time >= LOADING_CONST_DURATION
-        ])
-
-    # Méthode pour mettre un chargement de <freight> sacs dans le véhicule.
-    def load(self, freight: int):
-        if self.can_load(freight):
-            self.used_capacity += freight
-            self.remaining_time -= LOADING_CONST_DURATION
-        else:
-            raise Exception(
-                "vehicle %d can't load freight (%d required ; %d available)" %
-                (self.ve_id, freight, self.total_capacity - self.used_capacity)
-            )
-
     # Méthode pour remplir entièrement le véhicule de sacs.
-    def fill(self):
-        freight: int = self.total_capacity - self.used_capacity
-        if freight > 0:
-            self.load(freight)
+    def fill(self) -> None:
+        self.used_capacity = Vehicle.total_capacity
+        self.remaining_time -= LOADING_CONST_DURATION
+        self.history.append("R")
+
+    # Méthode pour déterminer si le véhicule a besoin d'être rechargé ou non.
+    def needs_recharge(self) -> bool:
+        return self.dist / self.max_dist < 0.20
 
     # Méthode pour recharger la batterie du véhicule (i.e. remettre sa distance disponible au max).
     def recharge(self):
         self.remaining_time -= self.charge_duration
         self.dist = Vehicle.max_dist
+        self.history.append("C")
 
     # Méthode pour calculer la durée d'une livraison.
     @staticmethod
