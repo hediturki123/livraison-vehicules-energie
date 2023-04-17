@@ -1,5 +1,7 @@
 import configparser as ini
 
+from src.models.context import Context
+
 VEHICLE_INI_SECTION: str = 'Vehicle'
 DELIVERY_CONST_DURATION: int = 300
 LOADING_CONST_DURATION: int = 600
@@ -13,16 +15,17 @@ class Vehicle:
     end_time: int
     charge_duration: int = 10800  # TODO: Prendre en compte la vitesse de charge.
 
-    def __init__(self, distances: list[list[float]], times: list[list[int]]):
+    def __init__(self, context: Context):
         Vehicle.__id += 1
         self.ve_id: int = Vehicle.__id
-        self.dist: float = Vehicle.max_dist
+        self.remaining_dist: float = Vehicle.max_dist
         self.used_capacity: int = Vehicle.total_capacity
         self.remaining_time: int = Vehicle.end_time - Vehicle.start_time
         self.position: int = 0
         self.history: list[str] = []
-        self.distances = distances
-        self.times = times
+        self.distances: list[list[float]] = context.distances
+        self.times: list[list[int]] = context.times
+        self.total_driven_dist: float = 0.0
 
     @staticmethod
     def initialize(ini_path: str):
@@ -71,7 +74,7 @@ class Vehicle:
         if position == 0:
             return True
         return all([
-            self.dist >= self.distances[self.position][position] + self.distances[position][0],
+            self.remaining_dist >= self.distances[self.position][position] + self.distances[position][0],
             self.remaining_time >= self.times[self.position][position]
             + self.times[position][0] + self.__get_delivery_duration(demand),
             self.used_capacity >= demand
@@ -80,7 +83,9 @@ class Vehicle:
     # Méthode pour déplacer le véhicule à la position <position> sur <distance> km pendant <duration> secondes.
     def move_to(self, new_position: int):
         if new_position != self.position:
-            self.dist -= self.distances[self.position][new_position]
+            driven_dist = self.distances[self.position][new_position]
+            self.remaining_dist -= driven_dist
+            self.total_driven_dist += driven_dist
             self.remaining_time -= self.times[self.position][new_position]
             self.position = new_position
             if new_position != 0:
@@ -113,12 +118,12 @@ class Vehicle:
 
     # Méthode pour déterminer si le véhicule a besoin d'être rechargé ou non.
     def needs_recharge(self) -> bool:
-        return self.dist / self.max_dist < 0.20
+        return self.remaining_dist / self.max_dist < 0.20  # TODO: Ajouter comme paramètre d'entrée du programme
 
     # Méthode pour recharger la batterie du véhicule (i.e. remettre sa distance disponible au max).
     def recharge(self):
         self.remaining_time -= self.charge_duration
-        self.dist = Vehicle.max_dist
+        self.remaining_dist = Vehicle.max_dist
         self.history.append("C")
 
     # Méthode pour calculer la durée d'une livraison.

@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class InstanceFile(Enum):
+class ContextFile(Enum):
     DISTANCES = 'distances.txt'
     TIMES = 'times.txt'
     VEHICLE = 'vehicle.ini'
