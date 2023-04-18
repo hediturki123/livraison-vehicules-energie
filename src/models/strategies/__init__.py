@@ -1,1 +1,1 @@
-from src.models.strategies.determinist_strategy import DeterministStrategy
+from src.models.strategies.basic_strategy import BasicStrategy

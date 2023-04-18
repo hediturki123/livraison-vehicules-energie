@@ -2,7 +2,7 @@ from sys import argv
 
 from src.models import Strategy, Heuristic
 from src.models.heuristics import SwapHeuristic
-from src.models.strategies import DeterministStrategy
+from src.models.strategies import BasicStrategy
 from src.models.context import WAREHOUSE_POSITION, Context
 
 
@@ -12,7 +12,7 @@ def main():
 
         context: Context = Context(instance_name)
 
-        strategy: Strategy = DeterministStrategy(context)
+        strategy: Strategy = BasicStrategy(context, is_determinist=False)
 
         heuristic: Heuristic = SwapHeuristic(strategy)
 

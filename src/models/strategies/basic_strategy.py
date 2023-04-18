@@ -1,16 +1,18 @@
-import copy
+import copy as cp
+import random as rd
 
 from src.models import Strategy, StrategyExecutionResult, Vehicle, Context
 from src.models.context import WAREHOUSE_POSITION
 
 
-class DeterministStrategy(Strategy):
-    def __init__(self, context: Context):
+class BasicStrategy(Strategy):
+    def __init__(self, context: Context, is_determinist: bool = True):
         super().__init__(context)
+        self.is_determinist = is_determinist
 
     def execute(self, visits: list[int]) -> StrategyExecutionResult:
         # On recopie la liste des visites pour préserver l'entrée
-        visits_to_do: list[int] = copy.copy(visits)
+        visits_to_do: list[int] = cp.copy(visits)
 
         # On crée un nouveau véhicule
         current_vehicle: Vehicle = Vehicle(self.context)
@@ -18,8 +20,10 @@ class DeterministStrategy(Strategy):
         # On ne charge PAS le véhicule (on le fait avant le départ du pilote du véhicule).
         # Tant qu'il y a des visites à effectuer...
         while len(visits_to_do) > 0:
-            # La prochaine visite à effectuer est la première de la liste
-            next_visit: int = visits_to_do[0]
+            # La prochaine visite à effectuer est :
+            # - la première de la liste dans le cas déterministe
+            # - une visite à un index aléatoire dans le cas non déterministe
+            next_visit: int = visits_to_do[0 if self.is_determinist else rd.randint(0, len(visits_to_do)-1)]
             # Si le véhicule peut se déplacer, livrer puis rentrer
             if current_vehicle.can_move_and_deliver(next_visit, self.context.visits[next_visit].demand):
                 # Se déplacer puis livrer
