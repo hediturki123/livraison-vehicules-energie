@@ -1,5 +1,6 @@
-from src import Strategy
-from src.models import Vehicle, Context
+import copy
+
+from src.models import Strategy, StrategyExecutionResult, Vehicle, Context
 from src.models.context import WAREHOUSE_POSITION
 
 
@@ -7,7 +8,10 @@ class DeterministStrategy(Strategy):
     def __init__(self, context: Context):
         super().__init__(context)
 
-    def execute(self, visits_to_do: list[int]) -> float:
+    def execute(self, visits: list[int]) -> StrategyExecutionResult:
+        # On recopie la liste des visites pour préserver l'entrée
+        visits_to_do: list[int] = copy.copy(visits)
+
         # On crée un nouveau véhicule
         current_vehicle: Vehicle = Vehicle(self.context)
         used_vehicles: list[Vehicle] = [current_vehicle]
@@ -49,7 +53,6 @@ class DeterministStrategy(Strategy):
         total_distance: float = 0.0
         for vehicle in used_vehicles:
             total_distance += vehicle.total_driven_dist
-            print("%s" % ",".join(vehicle.history))
 
         # On retourne la distance totale parcourue pour l'utiliser dans une heuristique
-        return total_distance
+        return StrategyExecutionResult(total_distance, [vehicle.history for vehicle in used_vehicles])

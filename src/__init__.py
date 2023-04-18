@@ -1,7 +1,8 @@
 from sys import argv
 
-from src.models import Strategy
-from src.models.strategies.determinist_strategy import DeterministStrategy
+from src.models import Strategy, Heuristic
+from src.models.heuristics import SwapHeuristic
+from src.models.strategies import DeterministStrategy
 from src.models.context import WAREHOUSE_POSITION, Context
 
 
@@ -13,12 +14,9 @@ def main():
 
         strategy: Strategy = DeterministStrategy(context)
 
-        visits_to_do: list[int] = [visits for visits in context.visits]
-        visits_to_do.remove(WAREHOUSE_POSITION)
+        heuristic: Heuristic = SwapHeuristic(strategy)
 
-        result = strategy.execute(visits_to_do)
-
-        print('\nDistance totale parcourue : %.3f km' % result)
+        heuristic.execute_strategy()
     else:
         print("Veuillez renseigner un nom d'instance en argument.")
 
