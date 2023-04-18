@@ -10,7 +10,10 @@ WAREHOUSE_POSITION: int = 0
 
 # Contexte de l'instance choisie comportant les distances, les temps, les visites, etc.
 class Context:
-    def __init__(self, instance_name: str):
+    def __init__(self, instance_name: str, verbose: bool):
+        self.verbose = verbose
+
+        # Initialisation des fichiers du contexte
         self.__initialize_files(instance_name)
 
         # Initialisation des visites

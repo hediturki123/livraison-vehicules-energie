@@ -1,24 +1,47 @@
 from sys import argv
 
+import click
+
 from src.models import Strategy, Heuristic
-from src.models.heuristics import SwapHeuristic
+from src.models.heuristics import SwapHeuristic, InsertHeuristic
 from src.models.strategies import BasicStrategy
 from src.models.context import WAREHOUSE_POSITION, Context
 
 
-def main():
-    if len(argv) >= 2:
-        instance_name: str = argv[1]
+@click.command()
+@click.argument('instance_name')
+@click.option(
+    '-d/-nd', '--determinist/--non-determinist',
+    default=True,
+    show_default=True,
+    help="Whether the strategy in heuristics should be deterministic or nondeterministic."
+)
+@click.option(
+    '-h', '--heuristic',
+    type=click.Choice(['insert', 'swap'], case_sensitive=False),
+    required=True,
+    help="Define the heuristic to use (cf. README)."
+)
+@click.option(
+    '-v', '--verbose',
+    is_flag=True,
+    help="Print a full description of the results."
+)
+def main(instance_name: str, determinist: bool, heuristic: str, verbose: bool):
+    context: Context = Context(instance_name, verbose)
 
-        context: Context = Context(instance_name)
+    strategy: Strategy = BasicStrategy(context, is_determinist=determinist)
 
-        strategy: Strategy = BasicStrategy(context, is_determinist=False)
+    chosen_heuristic: Heuristic | None = None
+    match heuristic:
+        case 'insert': chosen_heuristic = InsertHeuristic(strategy)
+        case 'swap': chosen_heuristic = SwapHeuristic(strategy)
+        case _: pass
 
-        heuristic: Heuristic = SwapHeuristic(strategy)
-
-        heuristic.execute_strategy()
+    if chosen_heuristic is not None:
+        chosen_heuristic.execute_strategy()
     else:
-        print("Veuillez renseigner un nom d'instance en argument.")
+        click.echo("Please choose a valid heuristic.", err=True)
 
 
 if __name__ == '__main__':
