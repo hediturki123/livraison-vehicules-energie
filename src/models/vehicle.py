@@ -14,6 +14,7 @@ class Vehicle:
     start_time: int
     end_time: int
     charge_duration: int
+    charge_threshold: float
 
     def __init__(self, context: Context):
         Vehicle.__id += 1
@@ -29,7 +30,10 @@ class Vehicle:
 
 
     @staticmethod
-    def initialize(ini_path: str, vehicle_charge_speed: str):
+    def initialize(ini_path: str, vehicle_charge_speed: str, vehicle_charge_threshold: float):
+        # Seuil de chargement auquel le véhicule doit aller se recharger
+        Vehicle.charge_threshold = vehicle_charge_threshold
+
         # Lecture des données de base du véhicule depuis le fichier .ini
         ini_parser = ini.ConfigParser()
         ini_parser.read(ini_path)
@@ -126,7 +130,7 @@ class Vehicle:
 
     # Méthode pour déterminer si le véhicule a besoin d'être rechargé ou non.
     def needs_recharge(self) -> bool:
-        return self.remaining_dist / self.max_dist < 0.20  # TODO: Ajouter comme paramètre d'entrée du programme
+        return self.remaining_dist / self.max_dist < Vehicle.charge_threshold
 
     # Méthode pour recharger la batterie du véhicule (i.e. remettre sa distance disponible au max).
     def recharge(self):

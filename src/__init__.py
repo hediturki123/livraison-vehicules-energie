@@ -30,12 +30,26 @@ from src.models.context import WAREHOUSE_POSITION, Context
     help="Whether the charge speed of the vehicles should be slow, medium or fast."
 )
 @click.option(
+    '-t', '--charge-threshold',
+    type=click.FloatRange(0.00, 1.00),
+    default=0.20,
+    show_default=True,
+    help="The threshold at which a vehicle should go back to the warehouse to charge."
+)
+@click.option(
     '-v', '--verbose',
     is_flag=True,
     help="Print a full description of the results."
 )
-def main(instance_name: str, determinist: bool, heuristic: str, verbose: bool, charge_speed: str):
-    context: Context = Context(instance_name, verbose, charge_speed)
+def main(
+    instance_name: str,
+    determinist: bool,
+    heuristic: str,
+    charge_speed: str,
+    charge_threshold: float,
+    verbose: bool
+):
+    context: Context = Context(instance_name, charge_speed, charge_threshold, verbose)
 
     strategy: Strategy = BasicStrategy(context, is_determinist=determinist)
 
