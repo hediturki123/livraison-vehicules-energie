@@ -10,7 +10,7 @@ WAREHOUSE_POSITION: int = 0
 
 # Contexte de l'instance choisie comportant les distances, les temps, les visites, etc.
 class Context:
-    def __init__(self, instance_name: str, verbose: bool):
+    def __init__(self, instance_name: str, verbose: bool, vehicle_charge_speed: str):
         self.verbose = verbose
 
         # Initialisation des fichiers du contexte
@@ -21,7 +21,7 @@ class Context:
 
         # Initialisation des données de véhicule
         from src.models.vehicle import Vehicle
-        Vehicle.initialize(self.files_paths[ContextFile.VEHICLE])
+        Vehicle.initialize(self.files_paths[ContextFile.VEHICLE], vehicle_charge_speed)
 
         # Initialisation de la matrice des distances (en kilomètres)
         self.__initialize_distances()

@@ -13,29 +13,30 @@ class Vehicle:
     total_capacity: int
     start_time: int
     end_time: int
-    charge_duration: int = 10800  # TODO: Prendre en compte la vitesse de charge.
+    charge_duration: int
 
     def __init__(self, context: Context):
         Vehicle.__id += 1
         self.ve_id: int = Vehicle.__id
         self.remaining_dist: float = Vehicle.max_dist
+        self.total_driven_dist: float = 0.0
         self.used_capacity: int = Vehicle.total_capacity
         self.remaining_time: int = Vehicle.end_time - Vehicle.start_time
         self.position: int = 0
         self.history: list[str] = []
         self.distances: list[list[float]] = context.distances
         self.times: list[list[int]] = context.times
-        self.total_driven_dist: float = 0.0
+
 
     @staticmethod
-    def initialize(ini_path: str):
+    def initialize(ini_path: str, vehicle_charge_speed: str):
         # Lecture des données de base du véhicule depuis le fichier .ini
         ini_parser = ini.ConfigParser()
         ini_parser.read(ini_path)
 
         # Vérification de la validité du fichier chargé
         if not ini_parser.has_section(VEHICLE_INI_SECTION):
-            raise Exception('invalid ini file for vehicle (missing Vehicle section)')
+            raise Exception(f'invalid ini file for vehicle (missing {VEHICLE_INI_SECTION} section)')
         vehicle_ini = ini_parser[VEHICLE_INI_SECTION]
 
         # Chargement de la distance maximale (en km)
@@ -43,14 +44,14 @@ class Vehicle:
         if max_dist_key in vehicle_ini:
             Vehicle.max_dist = float(vehicle_ini.get(max_dist_key))
         else:
-            raise Exception('invalid ini file for vehicle (missing "max_dist" key)')
+            raise Exception(f'invalid ini file for vehicle (missing "{max_dist_key}" key)')
 
         # Chargement de la capacité (sans unité)
         capacity_key: str = 'capacity'
         if capacity_key in vehicle_ini:
             Vehicle.total_capacity = int(vehicle_ini.get(capacity_key))
         else:
-            raise Exception('invalid ini file for vehicle (missing "capacity" key)')
+            raise Exception(f'invalid ini file for vehicle (missing "{capacity_key}" key)')
 
         # Chargement de l'heure de départ (en secondes)
         start_time_key: str = "start_time"
@@ -59,7 +60,7 @@ class Vehicle:
             start_time = int(hours) * 3600 + int(minutes) * 60
             Vehicle.start_time = start_time
         else:
-            raise Exception('invalid ini file for vehicle (missing "start_time" key)')
+            raise Exception(f'invalid ini file for vehicle (missing "{start_time_key}" key)')
 
         # Chargement de l'heure d'arrivée (en secondes)
         end_time_key: str = "end_time"
@@ -68,7 +69,14 @@ class Vehicle:
             end_time = int(hours) * 3600 + int(minutes) * 60
             Vehicle.end_time = end_time
         else:
-            raise Exception('invalid ini file for vehicle (missing "end_time" key)')
+            raise Exception(f'invalid ini file for vehicle (missing "{end_time_key}" key)')
+
+        # Chargement de la vitesse de charge d'un véhicule
+        charge_speed_key: str = f'charge_{vehicle_charge_speed}'
+        if charge_speed_key in vehicle_ini:
+            Vehicle.charge_duration = int(vehicle_ini.get(charge_speed_key)) * 60
+        else:
+            raise Exception(f'invalid ini file for vehicle (missing "{charge_speed_key}" key)')
 
     def can_move_and_deliver(self, position: int, demand: int) -> bool:
         if position == 0:

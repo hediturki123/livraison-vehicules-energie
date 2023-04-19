@@ -23,12 +23,19 @@ from src.models.context import WAREHOUSE_POSITION, Context
     help="Define the heuristic to use (cf. README)."
 )
 @click.option(
+    '-s', '--charge-speed',
+    type=click.Choice(['slow', 'medium', 'fast'], case_sensitive=False),
+    default='medium',
+    show_default=True,
+    help="Whether the charge speed of the vehicles should be slow, medium or fast."
+)
+@click.option(
     '-v', '--verbose',
     is_flag=True,
     help="Print a full description of the results."
 )
-def main(instance_name: str, determinist: bool, heuristic: str, verbose: bool):
-    context: Context = Context(instance_name, verbose)
+def main(instance_name: str, determinist: bool, heuristic: str, verbose: bool, charge_speed: str):
+    context: Context = Context(instance_name, verbose, charge_speed)
 
     strategy: Strategy = BasicStrategy(context, is_determinist=determinist)
 
