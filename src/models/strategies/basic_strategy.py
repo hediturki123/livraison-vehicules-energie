@@ -59,4 +59,8 @@ class BasicStrategy(Strategy):
             total_distance += vehicle.total_driven_dist
 
         # On retourne la distance totale parcourue pour l'utiliser dans une heuristique
-        return StrategyExecutionResult(total_distance, [vehicle.history for vehicle in used_vehicles])
+        return StrategyExecutionResult(
+            total_distance,
+            [vehicle.history for vehicle in used_vehicles],
+            visits
+        )

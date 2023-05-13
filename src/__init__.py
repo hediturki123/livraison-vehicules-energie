@@ -37,6 +37,19 @@ from src.models.context import WAREHOUSE_POSITION, Context
     help="The threshold at which a vehicle should go back to the warehouse to charge."
 )
 @click.option(
+    '-i', '--iteration-count',
+    type=click.IntRange(1),
+    default=100,
+    show_default=True,
+    help="The number of iteration to explore the solution neighborhood."
+)
+@click.option(
+    '-fs/-bs', '--first-solution/--best-solution',
+    default=True,
+    show_default=True,
+    help="Whether the algorithm stops at the first solution encountered or keeps running to find the best solution."
+)
+@click.option(
     '-v', '--verbose',
     is_flag=True,
     help="Print a full description of the results."
@@ -47,11 +60,15 @@ def main(
     heuristic: str,
     charge_speed: str,
     charge_threshold: float,
+    iteration_count: int,
+    first_solution: bool,
     verbose: bool
 ):
-    context: Context = Context(instance_name, charge_speed, charge_threshold, verbose)
+    context: Context = Context(instance_name, charge_speed, charge_threshold, first_solution, verbose)
 
     strategy: Strategy = BasicStrategy(context, is_determinist=determinist)
+
+    print(iteration_count)
 
     chosen_heuristic: Heuristic | None = None
     match heuristic:
