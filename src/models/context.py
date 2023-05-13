@@ -10,8 +10,16 @@ WAREHOUSE_POSITION: int = 0
 
 # Contexte de l'instance choisie comportant les distances, les temps, les visites, etc.
 class Context:
-    def __init__(self, instance_name: str, vehicle_charge_speed: str, vehicle_charge_threshold: float, verbose: bool):
+    def __init__(
+        self,
+        instance_name: str,
+        vehicle_charge_speed: str,
+        vehicle_charge_threshold: float,
+        keep_first_solution: bool,
+        verbose: bool
+    ):
         self.vehicle_charge_threshold = vehicle_charge_threshold
+        self.keep_first_solution = keep_first_solution
         self.verbose = verbose
 
         # Initialisation des fichiers du contexte
