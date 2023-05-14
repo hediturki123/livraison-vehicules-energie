@@ -16,7 +16,7 @@ class Heuristic(ABC):
         min_dist: float,
         visits_to_do: list[int],
         keep_first_solution: bool
-    ) -> (float, list[int]):
+    ) -> (float, StrategyExecutionResult):
         pass
 
     def execute_strategy(self):
@@ -30,11 +30,14 @@ class Heuristic(ABC):
         last_min_dist: float = float('inf')
 
         iteration: int = 0
-        while iteration < 100 and min_dist != last_min_dist:
+        while iteration < self.context.iteration_count and min_dist != last_min_dist:
             last_min_dist = min_dist
-            visits_to_do, min_dist = self.explore_neighborhood(min_dist, visits_to_do, self.context.keep_first_solution)
+            min_dist, strategy_result = self.explore_neighborhood(min_dist, visits_to_do, self.context.keep_first_solution)
+            visits_to_do = strategy_result.visits_done
             iteration += 1
-        # print(last_min_dist)
-        # strategy_result.print_history()
+
+        match self.context.output:
+            case 'min_dist': print(last_min_dist)
+            case 'history': strategy_result.print_history()
 
         return last_min_dist

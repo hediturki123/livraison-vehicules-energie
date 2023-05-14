@@ -9,7 +9,8 @@ class SwapHeuristic(Heuristic):
         super().__init__(strategy)
         self.context = strategy.context
 
-    def explore_neighborhood(self, min_dist: float, visits_to_do: list[int], first_solution: bool) -> (list[int], float):
+    def explore_neighborhood(self, min_dist: float, visits_to_do: list[int], first_solution: bool) -> (float, StrategyExecutionResult):
+        strategy_result = StrategyExecutionResult(0, [], [])
         visits = cp.copy(visits_to_do)
         i = 0
         while i < len(visits_to_do):
@@ -22,12 +23,13 @@ class SwapHeuristic(Heuristic):
                 if new_dist < min_dist:
                     min_dist = new_dist
                     if first_solution:
-                        return strategy_result.visits_done, min_dist
+                        return min_dist, strategy_result
                     else:
                         visits = strategy_result.visits_done
                 j += 1
             i += 1
-        return visits, min_dist
+        strategy_result.visits_done = visits
+        return min_dist, strategy_result
 
     @staticmethod
     def swap_visits(i: int, j: int, visits: list[int]) -> list[int]:

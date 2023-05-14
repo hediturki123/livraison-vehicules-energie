@@ -15,12 +15,16 @@ class Context:
         instance_name: str,
         vehicle_charge_speed: str,
         vehicle_charge_threshold: float,
+        iteration_count: int,
         keep_first_solution: bool,
-        verbose: bool
+        output: str,
+        verbose: bool,
     ):
         self.vehicle_charge_threshold = vehicle_charge_threshold
+        self.iteration_count = iteration_count
         self.keep_first_solution = keep_first_solution
         self.verbose = verbose
+        self.output = output
 
         # Initialisation des fichiers du contexte
         self.__initialize_files(instance_name)

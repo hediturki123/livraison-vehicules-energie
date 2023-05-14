@@ -51,6 +51,13 @@ from src.models.context import WAREHOUSE_POSITION, Context
     help="Whether the algorithm stops at the first solution encountered or keeps running to find the best solution."
 )
 @click.option(
+    '-o', '--output',
+    type=click.Choice(['history', 'min_dist'], case_sensitive=False),
+    default='history',
+    show_default=True,
+    help="Whether the output result should be the vehicles history or the minimum distance driven."
+)
+@click.option(
     '-v', '--verbose',
     is_flag=True,
     help="Print a full description of the results."
@@ -63,13 +70,20 @@ def main(
     charge_threshold: float,
     iteration_count: int,
     first_solution: bool,
-    verbose: bool
+    output: str,
+    verbose: bool,
 ):
-    context: Context = Context(instance_name, charge_speed, charge_threshold, first_solution, verbose)
+    context: Context = Context(
+        instance_name = instance_name,
+        vehicle_charge_speed = charge_speed,
+        vehicle_charge_threshold = charge_threshold,
+        iteration_count = iteration_count,
+        keep_first_solution = first_solution,
+        output = output,
+        verbose = verbose
+    )
 
-    strategy: Strategy = BasicStrategy(context, is_determinist=determinist)
-
-    print(iteration_count)
+    strategy: Strategy = BasicStrategy(context, is_determinist = determinist)
 
     chosen_heuristic: Heuristic | None = None
     match heuristic:
