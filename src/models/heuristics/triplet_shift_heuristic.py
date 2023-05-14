@@ -1,7 +1,9 @@
 import copy as cp
 
 from src.models import Heuristic, Strategy
-class PermutationHeuristic(Heuristic):
+
+
+class TripletShiftHeuristic(Heuristic):
     def __init__(self, strategy: Strategy):
         super().__init__(strategy)
         self.context = strategy.context
@@ -17,7 +19,7 @@ class PermutationHeuristic(Heuristic):
         while i < len(visits_to_do):
             j = 1
             while j < len(visits_to_do):
-                inserted_visits_to_do = self.__permute_visits(j, cp.copy(visits_to_do))
+                inserted_visits_to_do = self.shift_visits(j, cp.copy(visits_to_do))
                 strategy_result = self.strategy.execute(inserted_visits_to_do)
                 new_dist = strategy_result.total_driven_distance
                 if new_dist < min_dist:
@@ -31,13 +33,9 @@ class PermutationHeuristic(Heuristic):
         return visits, min_dist
 
     @staticmethod
-    def __permute_visits(i: int, visits: list[int]) -> list[int]:
-        if i < len(visits) - 3:
-            tmp0 = visits[i]
-            tmp1 = visits[i + 1]
-            visits[i] = visits[i + 2]
-            visits[i + 1] = visits[i + 3]
-            visits[i + 2] = tmp0
-            visits[i + 3] = tmp1
+    def shift_visits(source_index: int, visits: list[int]) -> list[int]:
+        mod = len(visits)
+        source_index = source_index % mod
+        visits[source_index], visits[(source_index + 1) % mod], visits[(source_index + 2) % mod], visits[(source_index + 3) % mod] = visits[(source_index + 3) % mod], visits[source_index], visits[(source_index + 1) % mod], visits[(source_index + 2) % mod]
         return visits
 

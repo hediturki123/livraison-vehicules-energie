@@ -4,7 +4,7 @@ import click
 
 from src.models import Strategy, Heuristic
 from src.models.heuristics import SwapHeuristic, InsertHeuristic
-from src.models.heuristics.permutation_heuristic import PermutationHeuristic
+from src.models.heuristics.triplet_shift_heuristic import TripletShiftHeuristic
 from src.models.strategies import BasicStrategy
 from src.models.context import WAREHOUSE_POSITION, Context
 
@@ -75,7 +75,7 @@ def main(
     match heuristic:
         case 'insert': chosen_heuristic = InsertHeuristic(strategy)
         case 'swap': chosen_heuristic = SwapHeuristic(strategy)
-        case 'permute': chosen_heuristic = PermutationHeuristic(strategy)
+        case 'triplet_shift': chosen_heuristic = TripletShiftHeuristic(strategy)
         case _: pass
 
     if chosen_heuristic is not None:
