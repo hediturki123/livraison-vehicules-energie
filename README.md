@@ -73,4 +73,4 @@ Ces sorties ont été produites à partir du script *Bash* `generate_output.sh` 
 
 ## Réponses aux questions
 
-Vous trouverez les réponses aux questions du TP dans le fichier [`explanations.md`]("./docs/explanations.md") du dossier `docs`.
+Vous trouverez les réponses aux questions du TP dans le fichier [`explanations.md`](docs/explanations.md) du dossier `docs`.
