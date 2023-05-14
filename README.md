@@ -69,7 +69,7 @@ Le contenu d'un fichier contient l'historisque des visites fait par les véhicul
 91,92,93,94,9,R,95,96,97,98,99,100
 ```
 
-Ces sorties ont été produites à partir du script *Bash* `generate_output.sh` présent dans le dossier `scripts`.
+Ces sorties ont été produites à partir du script *Bash* `generate_output.sh` présent dans le dossier `scripts` (le script doit être exécuté depuis ce dossier).
 
 ## Réponses aux questions
 
