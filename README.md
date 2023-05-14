@@ -36,3 +36,11 @@ Lors de l'exécution d'une heuristique, deux stratégies sont possibles :
 
 - **Déterministe** (par défaut ; option `-d`) : on prend les visites dans leur ordre d'apparition,
 - **Non déterministe** (option `-nd`) : on prend les visites dans un ordre aléatoire.
+
+## Tests
+
+Pour s'assurer de la cohérence du code produit, des tests unitaires ont été mis en place.
+La commande suivante permet de les lancer :
+```sh
+poetry run python -m unittest discover -s tests -v
+```

@@ -15,7 +15,7 @@ class SwapHeuristic(Heuristic):
         while i < len(visits_to_do):
             j = 1
             while j < len(visits_to_do):
-                swapped_visits_to_do = self.__swap_visits(i, j, cp.copy(visits_to_do))
+                swapped_visits_to_do = self.swap_visits(i, j, cp.copy(visits_to_do))
                 # On compare la distance totale parcourue en faisant l'insert par rapport à la distance initiale
                 strategy_result = self.strategy.execute(swapped_visits_to_do)
                 new_dist = strategy_result.total_driven_distance
@@ -30,6 +30,6 @@ class SwapHeuristic(Heuristic):
         return visits, min_dist
 
     @staticmethod
-    def __swap_visits(i: int, j: int, visits: list[int]) -> list[int]:
+    def swap_visits(i: int, j: int, visits: list[int]) -> list[int]:
         visits[i], visits[j] = visits[j], visits[i]
         return visits

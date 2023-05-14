@@ -19,7 +19,7 @@ class InsertHeuristic(Heuristic):
         while i < len(visits_to_do):
             j = 1
             while j < len(visits_to_do):
-                inserted_visits_to_do = self.__insert_visits(i, j, cp.copy(visits_to_do))
+                inserted_visits_to_do = self.insert_visits(i, j, cp.copy(visits_to_do))
                 strategy_result = self.strategy.execute(inserted_visits_to_do)
                 new_dist = strategy_result.total_driven_distance
                 if new_dist < min_dist:
@@ -33,8 +33,8 @@ class InsertHeuristic(Heuristic):
         return visits, min_dist
 
     @staticmethod
-    def __insert_visits(i: int, j: int, visits: list[int]) -> list[int]:
-        tmp = visits[i]
-        visits.pop(i)
-        visits.insert(j, tmp)
+    def insert_visits(source_index: int, target_index: int, visits: list[int]) -> list[int]:
+        if target_index >= len(visits):
+            raise IndexError('target index should not exceed visits count')
+        visits.insert(target_index, visits.pop(source_index))
         return visits

@@ -88,7 +88,7 @@ class Vehicle:
         return all([
             self.remaining_dist >= self.distances[self.position][position] + self.distances[position][0],
             self.remaining_time >= self.times[self.position][position]
-            + self.times[position][0] + self.__get_delivery_duration(demand),
+            + self.times[position][0] + self.get_delivery_duration(demand),
             self.used_capacity >= demand
         ])
 
@@ -108,14 +108,14 @@ class Vehicle:
         return all([
             self.position != 0,
             self.used_capacity >= demand,
-            self.remaining_time >= self.__get_delivery_duration(demand)
+            self.remaining_time >= self.get_delivery_duration(demand)
         ])
 
     # Méthode pour effectuer une livraison (i.e. vider le chargement du véhicule).
     def deliver(self, amount: int):
         if self.can_deliver(amount):
             self.used_capacity -= amount
-            self.remaining_time -= self.__get_delivery_duration(amount)
+            self.remaining_time -= self.get_delivery_duration(amount)
         else:
             raise Exception(
                 "vehicle %d can't make delivery (%d required ; %d available)" %
@@ -140,5 +140,5 @@ class Vehicle:
 
     # Méthode pour calculer la durée d'une livraison.
     @staticmethod
-    def __get_delivery_duration(amount: int) -> int:
+    def get_delivery_duration(amount: int) -> int:
         return DELIVERY_CONST_DURATION + amount * 10

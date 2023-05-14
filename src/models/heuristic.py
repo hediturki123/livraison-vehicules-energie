@@ -34,7 +34,7 @@ class Heuristic(ABC):
             last_min_dist = min_dist
             visits_to_do, min_dist = self.explore_neighborhood(min_dist, visits_to_do, self.context.keep_first_solution)
             iteration += 1
-        print(min_dist)
+        # print(last_min_dist)
         # strategy_result.print_history()
 
         return last_min_dist
