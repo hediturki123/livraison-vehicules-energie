@@ -1,4 +1,5 @@
 from abc import abstractmethod, ABC
+from random import shuffle
 
 from src.models.strategy import Strategy
 from src.models.strategy_execution_result import StrategyExecutionResult
@@ -22,7 +23,10 @@ class Heuristic(ABC):
     def execute_strategy(self):
         visits: list[int] = [visit_id for visit_id in self.context.visits]
         visits.remove(WAREHOUSE_POSITION)
-        # On récupère la distance totale parcourue pour toutes les visites
+        # Si le départ est non déterministe, on mélange la liste des visites.
+        if not self.context.is_determinist:
+            shuffle(visits)
+        # On récupère la distance totale parcourue pour toutes les visites.
         strategy_result: StrategyExecutionResult = self.strategy.execute(visits)
 
         visits_to_do: list[int] = strategy_result.visits_done

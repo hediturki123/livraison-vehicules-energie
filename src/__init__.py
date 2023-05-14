@@ -15,7 +15,7 @@ from src.models.context import WAREHOUSE_POSITION, Context
     '-d/-nd', '--determinist/--non-determinist',
     default=True,
     show_default=True,
-    help="Whether the strategy in heuristics should be deterministic or nondeterministic."
+    help="Whether the approach in heuristics should be deterministic or nondeterministic."
 )
 @click.option(
     '-h', '--heuristic',
@@ -48,7 +48,7 @@ from src.models.context import WAREHOUSE_POSITION, Context
     '-fs/-bs', '--first-solution/--best-solution',
     default=True,
     show_default=True,
-    help="Whether the algorithm stops at the first solution encountered or keeps running to find the best solution."
+    help="Whether the algorithm stops at the first better solution encountered or keeps running to find the best solution."
 )
 @click.option(
     '-o', '--output',
@@ -75,6 +75,7 @@ def main(
 ):
     context: Context = Context(
         instance_name = instance_name,
+        is_determinist = determinist,
         vehicle_charge_speed = charge_speed,
         vehicle_charge_threshold = charge_threshold,
         iteration_count = iteration_count,
@@ -83,7 +84,7 @@ def main(
         verbose = verbose
     )
 
-    strategy: Strategy = BasicStrategy(context, is_determinist = determinist)
+    strategy: Strategy = BasicStrategy(context)
 
     chosen_heuristic: Heuristic | None = None
     match heuristic:

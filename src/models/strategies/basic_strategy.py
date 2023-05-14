@@ -6,9 +6,8 @@ from src.models.context import WAREHOUSE_POSITION
 
 
 class BasicStrategy(Strategy):
-    def __init__(self, context: Context, is_determinist: bool = True):
+    def __init__(self, context: Context):
         super().__init__(context)
-        self.is_determinist = is_determinist
 
     def execute(self, visits: list[int]) -> StrategyExecutionResult:
         # On recopie la liste des visites pour préserver l'entrée
@@ -23,7 +22,7 @@ class BasicStrategy(Strategy):
             # La prochaine visite à effectuer est :
             # - la première de la liste dans le cas déterministe
             # - une visite à un index aléatoire dans le cas non déterministe
-            next_visit: int = visits_to_do[0 if self.is_determinist else rd.randint(0, len(visits_to_do)-1)]
+            next_visit: int = visits_to_do[0]
             # Si le véhicule peut se déplacer, livrer puis rentrer
             if current_vehicle.can_move_and_deliver(next_visit, self.context.visits[next_visit].demand):
                 # Se déplacer puis livrer

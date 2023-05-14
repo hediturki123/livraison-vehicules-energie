@@ -13,6 +13,7 @@ class Context:
     def __init__(
         self,
         instance_name: str,
+        is_determinist: bool,
         vehicle_charge_speed: str,
         vehicle_charge_threshold: float,
         iteration_count: int,
@@ -20,6 +21,7 @@ class Context:
         output: str,
         verbose: bool,
     ):
+        self.is_determinist = is_determinist
         self.vehicle_charge_threshold = vehicle_charge_threshold
         self.iteration_count = iteration_count
         self.keep_first_solution = keep_first_solution
