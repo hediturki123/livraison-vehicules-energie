@@ -19,7 +19,7 @@ from src.models.context import WAREHOUSE_POSITION, Context
 )
 @click.option(
     '-h', '--heuristic',
-    type=click.Choice(['insert', 'swap', 'permute'], case_sensitive=False),
+    type=click.Choice(['insert', 'swap', 'triplet_shift'], case_sensitive=False),
     required=True,
     help="Define the heuristic to use (cf. README)."
 )
