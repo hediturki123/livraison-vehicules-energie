@@ -92,3 +92,20 @@ Nous conseillerions d'utiliser la charge rapide pour la flotte de véhicules vis
 
 Néanmoins, il est intéressant de noter qu'une telle décision n'influe par sur la minimisation de la distance parcourue par les véhicules.
 En effet, jouer sur le paramètre de la vitesse de chargement ne changera pas l'ordre "optimal" dans lequel seront effectuées les visites, et donc la distance entre chaque visite. Cela peut, en revanche, amener à utiliser davantage de véhicules par manque de temps.
+
+## Question 6
+
+Nous n'avons pas su comment répondre programmatiquement à cette question, mais avons malgré tout réfléchi à la logique d'une solution.
+
+Si on voulait éviter tout rechargement, il faudrait faire en sorte que l'autonomie d'un véhicule soit supérieure à distance d'une tournée moyenne d'une instance.
+Par exemple, si la distance optimale à parcourir lors d'une instance est de 100 km, en supposant que l'on puisse séparer cette instance en tournées à peu près égales, on pourrait avoir 2 véhicules avec une autonomie de ~50 km, 3 véhicules avec une autonomie de ~34 km, 4 véhicules avec une autonomie de ~25 km, etc en n'oubliant pas de prendre en compte la distance pour revenir au dépôt.
+
+Dans des cas plus concrets et moins idéaux, la distance entre deux visites peut être disparate et élevée par rapport aux autres.
+Par exemple, on pourrait avoir pour chaque distance entre deux visites : 1, 1, 1, 2, 3, 10.
+Les cinq premières visites feraient alors partie d'une tournée de 8 km tandis que la dernière constituerait une tournée de 10 km à elle seule.
+Conséquemment, cela implique que l'autonomie minimale des véhicules doit être supérieure ou égale à la taille de la plus grande tournée à effectuer.
+
+On peut noter que moins on utilise de véhicules, moins l'autonomie "perdue" (i.e. la distance utilisée pour revenir au dépôt) sera grande.
+
+Ainsi, le nombre de véhicules nécessaire pour les différentes tailles d'instance dépend de si l'on cherche à minimiser le nombre de véhicules ou bien l'autonomie des véhicules (il s'agirait d'une problématique de coût dans la réalité).
+En reprenant la proposition ci-dessus, il y aurait autant de véhicules que de tournées par instance.
