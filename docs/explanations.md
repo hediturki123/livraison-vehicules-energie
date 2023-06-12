@@ -1,5 +1,59 @@
 # Livraison avec des véhicules électriques
 
+# **TP1**
+## **Modélisation**
+## Question 1
+Les **variables de décision** sont : 
+- Booléen pour définir si le véhicule doit revenir au dépôt pour recharger la batterie.
+- Booléen pour définir si le véhicule doit revenir au dépôt pour le charger de marchandises.  
+
+Les **contraintes** sont : 
+- Contrainte de capacité des véhicules : il faut que la somme des demandes des clients que doit livrer un véhicule ne dépasse pas **capacity** avant chaque chargement.
+- Contrainte liée à la distance maximale parcourue : chaque véhicule doit parcourir au maximum la distance **max_dist** avant chaque recharge.
+- Contrainte de temps : les livraisons doivent être effectuées entre **start_time** et **end_time**.
+- Contrainte de livraison : un client ne doit être livré qu’une fois.
+
+Les **objectifs** sont : 
+- Minimiser le nombre de véhicules utilisés pour faire les livraisons
+- Minimiser la distance totale parcourue par ces véhicules.
+
+## Question 2
+Une solution est représentée par des séries de valeurs de variables de décisions pour chaque instance, sous forme de tableau ou de liste par exemple.
+Par exemple, on peut définir un tableau d’entiers et de caractères pour définir la séquence de livraison d’un véhicule, les entiers définissent quels sont les clients à livrer et les caractères pour représenter les rechargements.
+
+## Question 3
+Pour évaluer si une solution est réalisable, il faut prendre en compte les contraintes que nous avons cités dans la question 1 : 
+- Il faut que la sommes des demandes des clients pour les livraisons d’un véhicule ne soient pas supérieures à **capacity**.
+- Il faut que la distance totale parcourue soit inférieure à **max_dist**.
+- Il faut que les livraisons soient faites entre **start_time** et **end_time**.
+- Il faut que chaque client soit livré qu’une fois.
+
+Une solution non réalisable est une solution qui ne respecte pas une de ces contraintes: une capacité supérieure à **capacity**, une distance totale supérieure à **max_dist**, des livraisons faites en dehors de **start_time** et **end_time** et enfin qu’un client soit livré deux fois.
+## Question 4
+Instances pour lesquelles il n’existe pas de solution réalisable
+- Contrainte de capacité des véhicules : On suppose que **capacity** = 100 sacs de courses et qu’il faut livrer dix clients avec ce nombre de sacs : [20, 20, 10, 10, 5, 5, 15, 15, 10, 15].
+- Contrainte liée à la distance maximale parcourue : On suppose que l’autonomie d’un véhicule est **max_dist** = 150km et qu’il faut livrer 10 clients : [30, 10, 20, 50, 30, 20, 10, 5, 8, 15].
+- Contrainte de temps : On suppose que les livraisons doivent être faites entre **start_time**  = 7:00 et **end_time** = 19:00 et qu’une livraison est effectuée à 19:30.
+- Contrainte de livraison : un client est livré deux fois.
+
+
+## **Premières heuristiques**
+## Question 1
+**a.** La méthode déterministe pour construire une solution réalisable a une complexité polynomiale de O(n^2) où n est le nombre de clients.
+
+**b.** On suppose qu’on ai 5 clients à livrer qui ont commandé respectivement 30, 40, 20, 50 et 10 sacs, et que la capacité maximale des véhicules est **capacity** = 100 sacs, on a alors besoin de deux véhicules : 
+- Véhicule 1 : 30 + 40 + 20 sacs
+- Véhicule 2 : 50 + 10 sacs
+
+**c.** On a 4 clients qui ont commandé respectivement 20, 30, 40, et 10 sacs, vu que la capacité maximale d’un véhicule est **capacity** = 100 sacs, alors on peut livrer tous les clients avec un seul véhicule.
+
+
+## Question 2
+On peut faire le choix de faire une heuristique de construction aléatoire qui consiste à partir d’une solution initiale aléatoire et de sélectionner aléatoirement les clients à livrer pour chaque véhicule. On peut définir “différente” par le fait qu’on affecte aléatoirement les clients sont affectés à des véhicules différents.
+
+
+# **TP2**
+
 ## Question 1
 
 ### Voisinage 1 : Prendre un élément dans la liste et l'insérer autre part dans la liste
